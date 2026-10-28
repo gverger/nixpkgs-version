@@ -12,9 +12,19 @@
       forAllSystems = f: nixpkgs.lib.genAttrs systems (system: f nixpkgs.legacyPackages.${system});
     in
     {
+      packages = forAllSystems (pkgs: {
+        # Aligns nixpkgs on the version pinned by nixpkgs-version
+        update-version = pkgs.writeShellApplication {
+          name = "update-version";
+          text = ''
+            nix flake update versions "$@"
+          '';
+        };
+      });
+
       devShells = forAllSystems (pkgs: {
         default = pkgs.mkShell {
-          packages = [ ];
+          packages = [ self.packages.${pkgs.stdenv.hostPlatform.system}.update-version ];
         };
       });
     };
