@@ -4,6 +4,11 @@
   };
 
   outputs = { nixpkgs, ... }: {
-    # Nothing here, just pinning the nixos version
+    # Pins the nixos version; other flakes follow it via `nixpkgs.follows = "versions/nixpkgs"`
+
+    templates.default = {
+      path = ./templates/default;
+      description = "Flake whose nixpkgs follows nixpkgs-version";
+    };
   };
 }
